@@ -20,6 +20,8 @@ const countFlags = computed(() => {
   return count;
 });
 
+const firstClick = ref(false);
+
 function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -58,7 +60,10 @@ function generateField(): void {
   }
 }
 
-function fillFieldWithMines(): void {
+function fillFieldWithMines(initialPosition: {
+  row: number;
+  col: number;
+}): void {
   if (mines.value < 1) {
     mines.value = 1;
   }
@@ -70,7 +75,10 @@ function fillFieldWithMines(): void {
     const row = getRandomInt(0, rows.value);
     const col = getRandomInt(0, cols.value);
     const field = fields.value[row]![col]!;
-    if (field.value === 9) {
+    if (
+      field.value === 9 ||
+      (initialPosition.row === row + 1 && initialPosition.col === col + 1)
+    ) {
       m--;
       continue;
     }
@@ -105,8 +113,7 @@ function calculateFieldValues(): void {
 
 function restart(): void {
   generateField();
-  fillFieldWithMines();
-  calculateFieldValues();
+  firstClick.value = false;
 }
 
 function getField(i: number, j: number): FieldProps {
@@ -117,6 +124,12 @@ function leftClickField(props: FieldProps): void {
   console.debug('Left clicked cell', props);
 
   const field = getField(props.row - 1, props.col - 1);
+
+  if (firstClick.value === false) {
+    firstClick.value = true;
+    fillFieldWithMines(props);
+    calculateFieldValues();
+  }
 
   if (field.state === 'closed') {
     field.state = 'open';
