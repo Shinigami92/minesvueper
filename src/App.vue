@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import type { FieldProps } from '@/components/Field.vue';
 import Field from '@/components/Field.vue';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const rows = ref(9);
 const cols = ref(9);
 const mines = ref(10);
+
+const countFlags = computed(() => {
+  let count = 0;
+  for (let i = 0; i < rows.value; i++) {
+    for (let j = 0; j < cols.value; j++) {
+      const field = getField(i, j);
+      if (field.state === 'flagged') {
+        count++;
+      }
+    }
+  }
+  return count;
+});
 
 function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
@@ -15,15 +28,7 @@ function getRandomInt(min: number, max: number): number {
 
 const fields = ref([] as FieldProps[][]);
 
-watch(
-  [rows, cols, mines],
-  () => {
-    generateField();
-    fillFieldWithMines();
-    calculateFieldValues();
-  },
-  { immediate: true },
-);
+watch([rows, cols, mines], restart, { immediate: true });
 
 function generateField(): void {
   if (rows.value < 3) {
@@ -98,6 +103,12 @@ function calculateFieldValues(): void {
   }
 }
 
+function restart(): void {
+  generateField();
+  fillFieldWithMines();
+  calculateFieldValues();
+}
+
 function getField(i: number, j: number): FieldProps {
   return fields.value[i]![j]!;
 }
@@ -119,6 +130,49 @@ function leftClickField(props: FieldProps): void {
             continue;
           }
           leftClickField(getField(row - 1, col - 1));
+        }
+      }
+    }
+
+    if (field.value === 9) {
+      for (let i = 0; i < rows.value; i++) {
+        for (let j = 0; j < cols.value; j++) {
+          const field2 = getField(i, j);
+          if (field2.state === 'closed') {
+            field2.state = 'open';
+          }
+        }
+      }
+    }
+  } else if (field.state === 'open' && field.value > 0 && field.value < 9) {
+    // Count flags around
+    let count = 0;
+    for (let i = -1; i <= 1; i++) {
+      for (let j = -1; j <= 1; j++) {
+        const row = props.row + i;
+        const col = props.col + j;
+        if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+          continue;
+        }
+        const field2 = getField(row - 1, col - 1);
+        if (field2.state === 'flagged') {
+          count++;
+        }
+      }
+    }
+
+    if (count === field.value) {
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const row = props.row + i;
+          const col = props.col + j;
+          if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+            continue;
+          }
+          const field2 = getField(row - 1, col - 1);
+          if (field2.state === 'closed') {
+            leftClickField(field2);
+          }
         }
       }
     }
@@ -145,12 +199,14 @@ function rightClickField(props: FieldProps): void {
 </script>
 
 <template lang="pug">
-span Height:
-input(v-model.number="cols", type="number")
-span Width:
-input(v-model.number="rows", type="number")
-span Mines:
-input(v-model.number="mines", type="number")
+span.ml-2 Height:
+input.border-2.w-14(v-model.number="cols", type="number")
+
+span.ml-2 Width:
+input.border-2.w-14(v-model.number="rows", type="number")
+
+span.ml-2 Mines:
+input.border-2.w-14(v-model.number="mines", type="number")
 
 .flex
   .grid(:class="[`grid-rows-${cols}`, `grid-cols-${rows}`]")
@@ -163,5 +219,7 @@ input(v-model.number="mines", type="number")
           @right-click="rightClickField"
         )
 
-button(@click="generateField") Restart
+button.ml-2.border-3.px-1(@click="restart") Restart
+
+span.ml-4 Flags: {{ countFlags }}
 </template>

@@ -24,6 +24,7 @@ const emit = defineEmits<{
 
 <template lang="pug">
 .w-10.h-10.border.border-gray-500.flex.justify-center.items-center.font-bold(
+  :class="{ 'bg-gray-200': state === 'closed' }",
   @click.left.prevent="emit('leftClick', props)",
   @click.middle.prevent="emit('middleClick', props)",
   @click.right.prevent="emit('rightClick', props)"
