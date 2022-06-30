@@ -122,6 +122,7 @@ module.exports = defineConfig({
       { allowNumber: true, allowBoolean: true },
     ],
 
+    'vue/multi-word-component-names': 'off',
     'vue/no-parsing-error': 'off',
     'vue/no-template-shadow': 'off',
   },
