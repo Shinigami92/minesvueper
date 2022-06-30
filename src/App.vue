@@ -199,6 +199,21 @@ function rightClickField(props: FieldProps): void {
 </script>
 
 <template lang="pug">
+h4.ml-2.text-xl Minesvueper
+
+span.ml-2 Repository:
+a.ml-1.mt-2.text-blue-600.underline(
+  href="https://github.com/Shinigami92/minesvueper"
+) https://github.com/Shinigami92/minesvueper
+
+br
+
+a.ml-2.mt-2.text-blue-600.underline(
+  href="https://github.com/Shinigami92/minesvueper/issues/new"
+) Found a bug? Open an issue!
+
+br
+
 span.ml-2 Height:
 input.border-2.w-14(v-model.number="cols", type="number")
 
@@ -208,7 +223,11 @@ input.border-2.w-14(v-model.number="rows", type="number")
 span.ml-2 Mines:
 input.border-2.w-14(v-model.number="mines", type="number")
 
-.flex
+span.ml-2 Flags: {{ countFlags }}
+
+button.ml-2.border-3.px-1(@click="restart") Restart
+
+.m-2.flex
   .grid(:class="[`grid-rows-${cols}`, `grid-cols-${rows}`]")
     template(v-for="(row, i) in rows", :key="i")
       template(v-for="(col, j) in cols", :key="j")
@@ -218,8 +237,4 @@ input.border-2.w-14(v-model.number="mines", type="number")
           @middle-click="middleClickField",
           @right-click="rightClickField"
         )
-
-button.ml-2.border-3.px-1(@click="restart") Restart
-
-span.ml-4 Flags: {{ countFlags }}
 </template>
