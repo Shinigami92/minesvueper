@@ -9,9 +9,9 @@ const mines = ref(10);
 
 const countFlags = computed(() => {
   let count = 0;
-  for (let i = 0; i < rows.value; i++) {
-    for (let j = 0; j < cols.value; j++) {
-      const field = getField(i, j);
+  for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
+    for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+      const field = getField(rowIndex, colIndex);
       if (field.state === 'flagged') {
         count++;
       }
@@ -47,12 +47,12 @@ function generateField(): void {
   }
 
   fields.value = [];
-  for (let row = 1; row <= rows.value; row++) {
+  for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
     fields.value.push([]);
-    for (let col = 1; col <= cols.value; col++) {
-      fields.value[row - 1]!.push({
-        row,
-        col,
+    for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+      fields.value[rowIndex]!.push({
+        row: rowIndex,
+        col: colIndex,
         value: 0,
         state: 'closed',
       });
@@ -72,36 +72,36 @@ function fillFieldWithMines(initialPosition: {
   }
 
   for (let m = 0; m < mines.value; m++) {
-    const row = getRandomInt(0, rows.value);
-    const col = getRandomInt(0, cols.value);
-    const field = fields.value[row]![col]!;
+    const rowIndex = getRandomInt(0, rows.value);
+    const colIndex = getRandomInt(0, cols.value);
+    const field = getField(rowIndex, colIndex);
     if (
       field.value === 9 ||
-      (initialPosition.row === row + 1 && initialPosition.col === col + 1)
+      (initialPosition.row === rowIndex && initialPosition.col === colIndex)
     ) {
       m--;
       continue;
     }
-    fields.value[row]![col]!.value = 9;
+    field.value = 9;
   }
 }
 
 function calculateFieldValues(): void {
-  for (let r = 0; r < rows.value; r++) {
-    for (let c = 0; c < cols.value; c++) {
-      const field = fields.value[r]![c]!;
+  for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
+    for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+      const field = getField(rowIndex, colIndex);
       if (field.value === 9) {
         continue;
       }
       let value = 0;
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          const row = r + i;
-          const col = c + j;
+      for (let deltaRowIndex = -1; deltaRowIndex <= 1; deltaRowIndex++) {
+        for (let deltaColIndex = -1; deltaColIndex <= 1; deltaColIndex++) {
+          const row = rowIndex + deltaRowIndex;
+          const col = colIndex + deltaColIndex;
           if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          if (fields.value[row]![col]!.value === 9) {
+          if (getField(row, col).value === 9) {
             value++;
           }
         }
@@ -116,14 +116,14 @@ function restart(): void {
   firstClick.value = false;
 }
 
-function getField(i: number, j: number): FieldProps {
-  return fields.value[i]![j]!;
+function getField(rowIndex: number, colIndex: number): FieldProps {
+  return fields.value[rowIndex]![colIndex]!;
 }
 
 function leftClickField(props: FieldProps): void {
   console.debug('Left clicked cell', props);
 
-  const field = getField(props.row - 1, props.col - 1);
+  const field = getField(props.row, props.col);
 
   if (firstClick.value === false) {
     firstClick.value = true;
@@ -135,22 +135,22 @@ function leftClickField(props: FieldProps): void {
     field.state = 'open';
 
     if (field.value === 0) {
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          const row = props.row + i;
-          const col = props.col + j;
-          if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+      for (let deltaRowIndex = -1; deltaRowIndex <= 1; deltaRowIndex++) {
+        for (let deltaColIndex = -1; deltaColIndex <= 1; deltaColIndex++) {
+          const row = field.row + deltaRowIndex;
+          const col = field.col + deltaColIndex;
+          if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          leftClickField(getField(row - 1, col - 1));
+          leftClickField(getField(row, col));
         }
       }
     }
 
     if (field.value === 9) {
-      for (let i = 0; i < rows.value; i++) {
-        for (let j = 0; j < cols.value; j++) {
-          const field2 = getField(i, j);
+      for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
+        for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+          const field2 = getField(rowIndex, colIndex);
           if (field2.state === 'closed') {
             field2.state = 'open';
           }
@@ -160,14 +160,14 @@ function leftClickField(props: FieldProps): void {
   } else if (field.state === 'open' && field.value > 0 && field.value < 9) {
     // Count flags around
     let count = 0;
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        const row = props.row + i;
-        const col = props.col + j;
-        if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+    for (let deltaRowIndex = -1; deltaRowIndex <= 1; deltaRowIndex++) {
+      for (let deltaColIndex = -1; deltaColIndex <= 1; deltaColIndex++) {
+        const row = field.row + deltaRowIndex;
+        const col = field.col + deltaColIndex;
+        if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
           continue;
         }
-        const field2 = getField(row - 1, col - 1);
+        const field2 = getField(row, col);
         if (field2.state === 'flagged') {
           count++;
         }
@@ -175,14 +175,14 @@ function leftClickField(props: FieldProps): void {
     }
 
     if (count === field.value) {
-      for (let i = -1; i <= 1; i++) {
-        for (let j = -1; j <= 1; j++) {
-          const row = props.row + i;
-          const col = props.col + j;
-          if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+      for (let deltaRowIndex = -1; deltaRowIndex <= 1; deltaRowIndex++) {
+        for (let deltaColIndex = -1; deltaColIndex <= 1; deltaColIndex++) {
+          const row = field.row + deltaRowIndex;
+          const col = field.col + deltaColIndex;
+          if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          const field2 = getField(row - 1, col - 1);
+          const field2 = getField(row, col);
           if (field2.state === 'closed') {
             leftClickField(field2);
           }
@@ -195,13 +195,13 @@ function leftClickField(props: FieldProps): void {
 function middleClickField(props: FieldProps): void {
   console.debug('Middle clicked cell', props);
 
-  const field = getField(props.row - 1, props.col - 1);
+  const field = getField(props.row, props.col);
 }
 
 function rightClickField(props: FieldProps): void {
   console.debug('Right clicked cell', props);
 
-  const field = getField(props.row - 1, props.col - 1);
+  const field = getField(props.row, props.col);
 
   if (field.state === 'closed') {
     field.state = 'flagged';
@@ -227,10 +227,10 @@ a.ml-2.mt-2.text-blue-600.underline(
 
 br
 
-span.ml-2 Height:
+span.ml-2 Width:
 input.border-2.w-14(v-model.number="cols", type="number")
 
-span.ml-2 Width:
+span.ml-2 Height:
 input.border-2.w-14(v-model.number="rows", type="number")
 
 span.ml-2 Mines:
@@ -241,11 +241,14 @@ span.ml-2 Flags: {{ countFlags }}
 button.ml-2.border-3.px-1(@click="restart") Restart
 
 .m-2.flex
-  .grid(:class="[`grid-rows-${cols}`, `grid-cols-${rows}`]")
-    template(v-for="(row, i) in rows", :key="i")
-      template(v-for="(col, j) in cols", :key="j")
+  .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
+    template(v-for="(row, rowIndex) in rows", :key="`row-${rowIndex}`")
+      template(
+        v-for="(col, colIndex) in cols",
+        :key="`row-${rowIndex}-col-${colIndex}`"
+      )
         Field(
-          v-bind="getField(i, j)",
+          v-bind="getField(rowIndex, colIndex)",
           @left-click="leftClickField",
           @middle-click="middleClickField",
           @right-click="rightClickField"
