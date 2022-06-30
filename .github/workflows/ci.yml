@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Set node version to 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Versions
+        run: |
+          echo "pnpm: $(pnpm --version)"
+          echo "npm : $(npm --version)"
+          echo "node: $(node --version)"
+          echo "process.versions:"
+          node -p process.versions
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Check formatting
+        run: pnpm prettier --check .
+
+      - name: Audit production
+        run: pnpm audit --prod
+
+      - name: Audit all
+        continue-on-error: true
+        run: pnpm audit
+
+      - name: Check outdated dependencies
+        continue-on-error: true
+        if: github.ref == 'refs/heads/main'
+        run: pnpm outdated --long
+
+      - name: Build
+        run: pnpm run build

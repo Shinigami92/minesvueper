@@ -9,6 +9,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
+    "importHelpers": true,
     "noImplicitOverride": true,
     "noUncheckedIndexedAccess": true,
     "allowSyntheticDefaultImports": true,
@@ -16,9 +17,12 @@
     "paths": {
       "@/*": ["src/*"]
     },
+    "allowJs": true,
     "downlevelIteration": true,
-    "removeComments": true
+    "removeComments": true,
+
+    "rootDir": ".",
+    "noEmit": true
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
   "exclude": ["node_modules"]
 }

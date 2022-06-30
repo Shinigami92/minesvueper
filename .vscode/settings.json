@@ -1,0 +1,8 @@
+{
+  "cSpell.words": ["minesvueper", "windi"],
+  "eslint.validate": ["javascript", "typescript", "vue"],
+  "files.associations": {
+    "*.json5": "jsonc"
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
