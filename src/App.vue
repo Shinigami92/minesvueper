@@ -102,8 +102,45 @@ function getField(i: number, j: number): FieldProps {
   return fields.value[i]![j]!;
 }
 
-function clickField(props: FieldProps): void {
-  console.log('Clicked cell', props);
+function leftClickField(props: FieldProps): void {
+  console.debug('Left clicked cell', props);
+
+  const field = getField(props.row - 1, props.col - 1);
+
+  if (field.state === 'closed') {
+    field.state = 'open';
+
+    if (field.value === 0) {
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          const row = props.row + i;
+          const col = props.col + j;
+          if (row < 1 || row > rows.value || col < 1 || col > cols.value) {
+            continue;
+          }
+          leftClickField(getField(row - 1, col - 1));
+        }
+      }
+    }
+  }
+}
+
+function middleClickField(props: FieldProps): void {
+  console.debug('Middle clicked cell', props);
+
+  const field = getField(props.row - 1, props.col - 1);
+}
+
+function rightClickField(props: FieldProps): void {
+  console.debug('Right clicked cell', props);
+
+  const field = getField(props.row - 1, props.col - 1);
+
+  if (field.state === 'closed') {
+    field.state = 'flagged';
+  } else if (field.state === 'flagged') {
+    field.state = 'closed';
+  }
 }
 </script>
 
@@ -119,5 +156,12 @@ input(v-model.number="mines", type="number")
   .grid(:class="[`grid-rows-${cols}`, `grid-cols-${rows}`]")
     template(v-for="(row, i) in rows", :key="i")
       template(v-for="(col, j) in cols", :key="j")
-        Field(v-bind="getField(i, j)", @click-cell="clickField")
+        Field(
+          v-bind="getField(i, j)",
+          @left-click="leftClickField",
+          @middle-click="middleClickField",
+          @right-click="rightClickField"
+        )
+
+button(@click="generateField") Restart
 </template>
