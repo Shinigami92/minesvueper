@@ -217,42 +217,54 @@ function rightClickField(props: FieldProps): void {
     field.state = 'closed';
   }
 }
+
+function preset(r: number, c: number, m: number): void {
+  rows.value = r;
+  cols.value = c;
+  mines.value = m;
+}
 </script>
 
 <template lang="pug">
 .mx-2.flex.flex-col.items-center
   h4.text-2xl Minesvueper
 
-  .flex.flex-col.items-stretch.max-w-80
-    .flex.flex-row.items-center.justify-between
-      label.min-w-14(for="cols") Width
-      input#cols.flex-grow(
-        v-model.number="cols",
-        type="range",
-        max="100",
-        min="3"
-      )
-      span.min-w-10.text-right(v-text="cols")
+  .flex.flex-row
+    .flex.flex-col.items-stretch.max-w-80
+      .flex.flex-row.items-center.justify-between
+        label.min-w-14(for="cols") Width
+        input#cols.flex-grow(
+          v-model.number="cols",
+          type="range",
+          max="100",
+          min="3"
+        )
+        span.min-w-10.text-right(v-text="cols")
 
-    .flex.flex-row.items-center.justify-between
-      label.min-w-14(for="rows") Height
-      input#rows.flex-grow(
-        v-model.number="rows",
-        type="range",
-        max="100",
-        min="3"
-      )
-      span.min-w-10.text-right(v-text="rows")
+      .flex.flex-row.items-center.justify-between
+        label.min-w-14(for="rows") Height
+        input#rows.flex-grow(
+          v-model.number="rows",
+          type="range",
+          max="100",
+          min="3"
+        )
+        span.min-w-10.text-right(v-text="rows")
 
-    .flex.flex-row.items-center.justify-between
-      label.min-w-14(for="mines") Mines
-      input#mines.flex-grow(
-        v-model.number="mines",
-        type="range",
-        :max="maxMines",
-        min="1"
-      )
-      span.min-w-10.text-right(v-text="mines")
+      .flex.flex-row.items-center.justify-between
+        label.min-w-14(for="mines") Mines
+        input#mines.flex-grow(
+          v-model.number="mines",
+          type="range",
+          :max="maxMines",
+          min="1"
+        )
+        span.min-w-10.text-right(v-text="mines")
+
+    .flex.flex-col.w-26
+      button.border.mx-2(@click="preset(9, 9, 10)") 9 x 9 10
+      button.border.mx-2(@click="preset(16, 16, 40)") 16 x 16 40
+      button.border.mx-2(@click="preset(16, 30, 99)") 16 x 30 99
 
   div
     span Flags: {{ countFlags }}
