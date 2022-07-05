@@ -220,21 +220,8 @@ function rightClickField(props: FieldProps): void {
 </script>
 
 <template lang="pug">
-.mx-2
-  h4.text-xl Minesvueper
-
-  span Repository:
-  a.ml-1.mt-2.text-blue-600.underline(
-    href="https://github.com/Shinigami92/minesvueper"
-  ) https://github.com/Shinigami92/minesvueper
-
-  br
-
-  a.mt-2.text-blue-600.underline(
-    href="https://github.com/Shinigami92/minesvueper/issues/new"
-  ) Found a bug? Open an issue!
-
-  br
+.mx-2.flex.flex-col.items-center
+  h4.text-2xl Minesvueper
 
   .flex.flex-col.items-stretch.max-w-80
     .flex.flex-row.items-center.justify-between
@@ -267,11 +254,12 @@ function rightClickField(props: FieldProps): void {
       )
       span.min-w-10.text-right(v-text="mines")
 
-  span Flags: {{ countFlags }}
+  div
+    span Flags: {{ countFlags }}
 
-  button.border-3.px-1(@click="restart") Restart
+    button.border-3.ml-2.px-1(@click="restart") Restart
 
-  .flex
+  .flex.mt-2
     .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
       template(v-for="(row, rowIndex) in rows", :key="`row-${rowIndex}`")
         template(
@@ -284,4 +272,15 @@ function rightClickField(props: FieldProps): void {
             @middle-click="middleClickField",
             @right-click="rightClickField"
           )
+
+  div
+    a.mt-2.text-blue-600.underline(
+      href="https://github.com/Shinigami92/minesvueper/issues/new"
+    ) Found a bug? Want a feature? Open an issue here!
+
+  div
+    span Repository:
+    a.ml-1.mt-2.text-blue-600.underline(
+      href="https://github.com/Shinigami92/minesvueper"
+    ) https://github.com/Shinigami92/minesvueper
 </template>
