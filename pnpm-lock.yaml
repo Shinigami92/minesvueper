@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@iconify/vue': ~3.2.1
   '@prettier/plugin-pug': ~2.1.1
   '@types/node': ~18.0.1
   '@typescript-eslint/eslint-plugin': ~5.30.5
@@ -34,6 +35,7 @@ dependencies:
   vue: 3.2.37
 
 devDependencies:
+  '@iconify/vue': 3.2.1_vue@3.2.37
   '@prettier/plugin-pug': 2.1.1_prettier@2.7.1
   '@types/node': 18.0.1
   '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
@@ -118,6 +120,14 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
+  /@iconify/vue/3.2.1_vue@3.2.37:
+    resolution: {integrity: sha512-c4R6ZgFo1JrJ8aPMMgOPgfU7lBswihMGR+yWe/P4ZukC3kTkeT4+lkt9Pc/itVFMkwva/S/7u9YofmYv57fnNQ==}
+    peerDependencies:
+      vue: 3.x
+    dependencies:
+      vue: 3.2.37
+    dev: true
+
   /@nodelib/fs.scandir/2.1.5:
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -139,9 +149,9 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@pkgr/utils/2.2.0:
-    resolution: {integrity: sha512-/+EeY/T/NLCfF4rvgUetl7ERNwoPz5q/p+8CYeAIFblsKSQbVJjmMccs/Y7CsOPv47hXcBrhk5IqOf9AqRNfhg==}
-    engines: {node: '>=12'}
+  /@pkgr/utils/2.3.0:
+    resolution: {integrity: sha512-7dIJ9CRVzBnqyEl7diUHPUFJf/oty2SeoVzcMocc5PeOUDK9KGzvgIBjGRRzzlRDaOjh3ADwH0WeibQvi3ls2Q==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     dependencies:
       cross-spawn: 7.0.3
       is-glob: 4.0.3
@@ -2275,7 +2285,7 @@ packages:
     resolution: {integrity: sha512-CSZRtSRZ8RhJGMtWyLRqlarmWPPlsgZJHtV6cz0VTHNOg+R7UBoE2eNPQmB5Qrhtk3RX2AAcJmVwMXFULVQSwg==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     dependencies:
-      '@pkgr/utils': 2.2.0
+      '@pkgr/utils': 2.3.0
       tslib: 2.4.0
     dev: true
 

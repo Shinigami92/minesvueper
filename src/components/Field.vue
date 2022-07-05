@@ -8,6 +8,8 @@ export interface FieldProps {
 </script>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
+
 const props = defineProps<{
   row: number;
   col: number;
@@ -23,14 +25,14 @@ const emit = defineEmits<{
 </script>
 
 <template lang="pug">
-.w-8.h-8.border.border-gray-500.flex.justify-center.items-center.font-bold(
-  :class="{ 'bg-gray-200': state === 'closed' }",
+.select-none.w-8.h-8.border.border-gray-500.flex.justify-center.items-center.font-bold(
+  :class="{ 'bg-gray-200': state !== 'open' }",
   @click.left.prevent="emit('leftClick', props)",
   @click.middle.prevent="emit('middleClick', props)",
   @click.right.prevent="emit('rightClick', props)"
 )
   template(v-if="state === 'flagged'")
-    span 🚩
+    Icon(icon="logos:vue")
   template(v-if="state === 'open'")
     span(v-if="value === 0")
     span.text-blue-700(v-if="value === 1") 1
@@ -41,5 +43,5 @@ const emit = defineEmits<{
     span.text-cyan-600(v-if="value === 6") 6
     span.text-gray-700(v-if="value === 7") 7
     span.text-gray-500(v-if="value === 8") 8
-    span(v-if="value === 9") *
+    Icon(v-if="value === 9", icon="mdi:mine")
 </template>

@@ -27,6 +27,7 @@
     "vue": "~3.2.37"
   },
   "devDependencies": {
+    "@iconify/vue": "~3.2.1",
     "@prettier/plugin-pug": "~2.1.1",
     "@types/node": "~18.0.1",
     "@typescript-eslint/eslint-plugin": "~5.30.5",
