@@ -220,67 +220,68 @@ function rightClickField(props: FieldProps): void {
 </script>
 
 <template lang="pug">
-h4.ml-2.text-xl Minesvueper
+.mx-2
+  h4.text-xl Minesvueper
 
-span.ml-2 Repository:
-a.ml-1.mt-2.text-blue-600.underline(
-  href="https://github.com/Shinigami92/minesvueper"
-) https://github.com/Shinigami92/minesvueper
+  span Repository:
+  a.ml-1.mt-2.text-blue-600.underline(
+    href="https://github.com/Shinigami92/minesvueper"
+  ) https://github.com/Shinigami92/minesvueper
 
-br
+  br
 
-a.ml-2.mt-2.text-blue-600.underline(
-  href="https://github.com/Shinigami92/minesvueper/issues/new"
-) Found a bug? Open an issue!
+  a.mt-2.text-blue-600.underline(
+    href="https://github.com/Shinigami92/minesvueper/issues/new"
+  ) Found a bug? Open an issue!
 
-br
+  br
 
-.flex.flex-col.items-stretch.ml-2.max-w-80
-  .flex.flex-row.items-center.justify-between
-    label.min-w-14(for="cols") Width
-    input#cols.flex-grow(
-      v-model.number="cols",
-      type="range",
-      max="100",
-      min="3"
-    )
-    span.min-w-10.text-right(v-text="cols")
-
-  .flex.flex-row.items-center.justify-between
-    label.min-w-14(for="rows") Height
-    input#rows.flex-grow(
-      v-model.number="rows",
-      type="range",
-      max="100",
-      min="3"
-    )
-    span.min-w-10.text-right(v-text="rows")
-
-  .flex.flex-row.items-center.justify-between
-    label.min-w-14(for="mines") Mines
-    input#mines.flex-grow(
-      v-model.number="mines",
-      type="range",
-      :max="maxMines",
-      min="1"
-    )
-    span.min-w-10.text-right(v-text="mines")
-
-span.ml-2 Flags: {{ countFlags }}
-
-button.ml-2.border-3.px-1(@click="restart") Restart
-
-.m-2.flex
-  .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
-    template(v-for="(row, rowIndex) in rows", :key="`row-${rowIndex}`")
-      template(
-        v-for="(col, colIndex) in cols",
-        :key="`row-${rowIndex}-col-${colIndex}`"
+  .flex.flex-col.items-stretch.max-w-80
+    .flex.flex-row.items-center.justify-between
+      label.min-w-14(for="cols") Width
+      input#cols.flex-grow(
+        v-model.number="cols",
+        type="range",
+        max="100",
+        min="3"
       )
-        Field(
-          v-bind="getField(rowIndex, colIndex)",
-          @left-click="leftClickField",
-          @middle-click="middleClickField",
-          @right-click="rightClickField"
+      span.min-w-10.text-right(v-text="cols")
+
+    .flex.flex-row.items-center.justify-between
+      label.min-w-14(for="rows") Height
+      input#rows.flex-grow(
+        v-model.number="rows",
+        type="range",
+        max="100",
+        min="3"
+      )
+      span.min-w-10.text-right(v-text="rows")
+
+    .flex.flex-row.items-center.justify-between
+      label.min-w-14(for="mines") Mines
+      input#mines.flex-grow(
+        v-model.number="mines",
+        type="range",
+        :max="maxMines",
+        min="1"
+      )
+      span.min-w-10.text-right(v-text="mines")
+
+  span Flags: {{ countFlags }}
+
+  button.border-3.px-1(@click="restart") Restart
+
+  .flex
+    .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
+      template(v-for="(row, rowIndex) in rows", :key="`row-${rowIndex}`")
+        template(
+          v-for="(col, colIndex) in cols",
+          :key="`row-${rowIndex}-col-${colIndex}`"
         )
+          Field(
+            v-bind="getField(rowIndex, colIndex)",
+            @left-click="leftClickField",
+            @middle-click="middleClickField",
+            @right-click="rightClickField"
+          )
 </template>
