@@ -26,7 +26,7 @@ const emit = defineEmits<{
 
 <template lang="pug">
 .select-none.w-8.h-8.border.border-gray-500.flex.justify-center.items-center.font-bold(
-  :class="{ 'bg-gray-200': state !== 'open' }",
+  :class="{ 'bg-gray-200': state !== 'open', 'hover:bg-gray-100': state === 'closed' }",
   @click.left.prevent="emit('leftClick', props)",
   @click.middle.prevent="emit('middleClick', props)",
   @click.right.prevent="emit('rightClick', props)"

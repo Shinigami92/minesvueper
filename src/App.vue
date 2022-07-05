@@ -262,14 +262,23 @@ function preset(r: number, c: number, m: number): void {
         span.min-w-10.text-right(v-text="mines")
 
     .flex.flex-col.w-26
-      button.border.mx-2(@click="preset(9, 9, 10)") 9 x 9 10
-      button.border.mx-2(@click="preset(16, 16, 40)") 16 x 16 40
-      button.border.mx-2(@click="preset(16, 30, 99)") 16 x 30 99
+      button.border.mx-2(
+        :class="'hover:bg-light-200'",
+        @click="preset(9, 9, 10)"
+      ) 9 x 9 10
+      button.border.mx-2(
+        :class="'hover:bg-light-200'",
+        @click="preset(16, 16, 40)"
+      ) 16 x 16 40
+      button.border.mx-2(
+        :class="'hover:bg-light-200'",
+        @click="preset(16, 30, 99)"
+      ) 16 x 30 99
 
   div
     span Flags: {{ countFlags }}
 
-    button.border-3.ml-2.px-1(@click="restart") Restart
+    button.border-3.ml-2.px-1(:class="'hover:bg-light-200'", @click="restart") Restart
 
   .flex.mt-2
     .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
