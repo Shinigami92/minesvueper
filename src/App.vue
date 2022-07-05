@@ -20,6 +20,8 @@ const countFlags = computed(() => {
   return count;
 });
 
+const maxMines = computed(() => rows.value * cols.value - 1);
+
 const firstClick = ref(false);
 
 function getRandomInt(min: number, max: number): number {
@@ -45,6 +47,12 @@ function generateField(): void {
   if (cols.value > 100) {
     cols.value = 100;
   }
+  if (mines.value < 1) {
+    mines.value = 1;
+  }
+  if (mines.value > maxMines.value) {
+    mines.value = maxMines.value;
+  }
 
   fields.value = [];
   for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
@@ -67,8 +75,8 @@ function fillFieldWithMines(initialPosition: {
   if (mines.value < 1) {
     mines.value = 1;
   }
-  if (mines.value > rows.value * cols.value - 1) {
-    mines.value = rows.value * cols.value - 1;
+  if (mines.value > maxMines.value) {
+    mines.value = maxMines.value;
   }
 
   for (let m = 0; m < mines.value; m++) {
@@ -227,14 +235,36 @@ a.ml-2.mt-2.text-blue-600.underline(
 
 br
 
-span.ml-2 Width:
-input.border-2.w-14(v-model.number="cols", type="number")
+.flex.flex-col.items-stretch.ml-2.max-w-80
+  .flex.flex-row.items-center.justify-between
+    label.min-w-14(for="cols") Width
+    input#cols.flex-grow(
+      v-model.number="cols",
+      type="range",
+      max="100",
+      min="3"
+    )
+    span.min-w-10.text-right(v-text="cols")
 
-span.ml-2 Height:
-input.border-2.w-14(v-model.number="rows", type="number")
+  .flex.flex-row.items-center.justify-between
+    label.min-w-14(for="rows") Height
+    input#rows.flex-grow(
+      v-model.number="rows",
+      type="range",
+      max="100",
+      min="3"
+    )
+    span.min-w-10.text-right(v-text="rows")
 
-span.ml-2 Mines:
-input.border-2.w-14(v-model.number="mines", type="number")
+  .flex.flex-row.items-center.justify-between
+    label.min-w-14(for="mines") Mines
+    input#mines.flex-grow(
+      v-model.number="mines",
+      type="range",
+      :max="maxMines",
+      min="1"
+    )
+    span.min-w-10.text-right(v-text="mines")
 
 span.ml-2 Flags: {{ countFlags }}
 
