@@ -109,7 +109,8 @@ function calculateFieldValues(): void {
           if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          if (getField(row, col).value === 9) {
+          const neighborField = getField(row, col);
+          if (neighborField.value === 9) {
             value++;
           }
         }
@@ -128,10 +129,14 @@ function getField(rowIndex: number, colIndex: number): FieldProps {
   return fields.value[rowIndex]![colIndex]!;
 }
 
-function leftClickField(props: FieldProps): void {
+function leftClickField(props: FieldProps, manualClick = false): void {
   console.debug('Left clicked cell', props);
 
   const field = getField(props.row, props.col);
+
+  if (field.state === 'flagged') {
+    return;
+  }
 
   if (firstClick.value === false) {
     firstClick.value = true;
@@ -150,7 +155,8 @@ function leftClickField(props: FieldProps): void {
           if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          leftClickField(getField(row, col));
+          const neighborField = getField(row, col);
+          leftClickField(neighborField);
         }
       }
     }
@@ -165,7 +171,12 @@ function leftClickField(props: FieldProps): void {
         }
       }
     }
-  } else if (field.state === 'open' && field.value > 0 && field.value < 9) {
+  } else if (
+    field.state === 'open' &&
+    manualClick &&
+    field.value > 0 &&
+    field.value < 9
+  ) {
     // Count flags around
     let count = 0;
     for (let deltaRowIndex = -1; deltaRowIndex <= 1; deltaRowIndex++) {
@@ -175,8 +186,8 @@ function leftClickField(props: FieldProps): void {
         if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
           continue;
         }
-        const field2 = getField(row, col);
-        if (field2.state === 'flagged') {
+        const neighborField = getField(row, col);
+        if (neighborField.state === 'flagged') {
           count++;
         }
       }
@@ -190,9 +201,9 @@ function leftClickField(props: FieldProps): void {
           if (row < 0 || row >= rows.value || col < 0 || col >= cols.value) {
             continue;
           }
-          const field2 = getField(row, col);
-          if (field2.state === 'closed') {
-            leftClickField(field2);
+          const neighborField = getField(row, col);
+          if (neighborField.state === 'closed') {
+            leftClickField(neighborField);
           }
         }
       }
@@ -289,7 +300,7 @@ function preset(r: number, c: number, m: number): void {
         )
           Field(
             v-bind="getField(rowIndex, colIndex)",
-            @left-click="leftClickField",
+            @left-click="leftClickField($event, true)",
             @middle-click="middleClickField",
             @right-click="rightClickField"
           )
