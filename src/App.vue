@@ -32,7 +32,58 @@ function getRandomInt(min: number, max: number): number {
 
 const fields = ref([] as FieldProps[][]);
 
+const win = ref(false);
+
 watch([rows, cols, mines], restart, { immediate: true });
+
+watch(
+  fields,
+  () => {
+    if (firstClick.value === false) {
+      return;
+    }
+
+    let countCoveredMines = 0;
+    let countUnclosedFields = 0;
+    for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
+      for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+        const field = getField(rowIndex, colIndex);
+        if (field.state !== 'open' && field.value === 9) {
+          countCoveredMines++;
+        }
+        if (field.state !== 'closed' && field.value !== 9) {
+          countUnclosedFields++;
+        }
+      }
+    }
+
+    const numNonMineFields = rows.value * cols.value - mines.value;
+
+    if (
+      countUnclosedFields >= numNonMineFields &&
+      countCoveredMines === mines.value
+    ) {
+      win.value = true;
+    }
+  },
+  { deep: true },
+);
+
+watch(win, (value) => {
+  if (!value) {
+    return;
+  }
+
+  // Uncover all missing fields
+  for (let rowIndex = 0; rowIndex < rows.value; rowIndex++) {
+    for (let colIndex = 0; colIndex < cols.value; colIndex++) {
+      const field = getField(rowIndex, colIndex);
+      if (field.state === 'closed') {
+        field.state = field.value === 9 ? 'flagged' : 'open';
+      }
+    }
+  }
+});
 
 function generateField(): void {
   if (rows.value < 3) {
@@ -122,6 +173,7 @@ function calculateFieldValues(): void {
 
 function restart(): void {
   generateField();
+  win.value = false;
   firstClick.value = false;
 }
 
@@ -131,6 +183,10 @@ function getField(rowIndex: number, colIndex: number): FieldProps {
 
 function leftClickField(props: FieldProps, manualClick = false): void {
   console.debug('Left clicked cell', props);
+
+  if (win.value) {
+    return;
+  }
 
   const field = getField(props.row, props.col);
 
@@ -214,11 +270,19 @@ function leftClickField(props: FieldProps, manualClick = false): void {
 function middleClickField(props: FieldProps): void {
   console.debug('Middle clicked cell', props);
 
+  if (win.value) {
+    return;
+  }
+
   const field = getField(props.row, props.col);
 }
 
 function rightClickField(props: FieldProps): void {
   console.debug('Right clicked cell', props);
+
+  if (win.value) {
+    return;
+  }
 
   const field = getField(props.row, props.col);
 
@@ -291,7 +355,7 @@ function preset(r: number, c: number, m: number): void {
 
     button.border-3.ml-2.px-1(:class="'hover:bg-light-200'", @click="restart") Restart
 
-  .flex.mt-2
+  .flex.flex-col.mt-2
     .grid(:class="[`grid-rows-${rows}`, `grid-cols-${cols}`]")
       template(v-for="(row, rowIndex) in rows", :key="`row-${rowIndex}`")
         template(
@@ -304,6 +368,8 @@ function preset(r: number, c: number, m: number): void {
             @middle-click="middleClickField",
             @right-click="rightClickField"
           )
+
+    .flex.justify-center(v-if="win") You win! 🎉
 
   div
     a.mt-2.text-blue-600.underline(
