@@ -24,5 +24,8 @@
     "rootDir": ".",
     "noEmit": true
   },
+  "vueCompilerOptions": {
+    "plugins": ["@volar/vue-language-plugin-pug"]
+  },
   "exclude": ["node_modules"]
 }

@@ -19,6 +19,10 @@
     "downlevelIteration": true,
     "removeComments": true
   },
+  "vueCompilerOptions": {
+    "plugins": ["@volar/vue-language-plugin-pug"],
+    "narrowingTypesInInlineHandlers": true
+  },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"],
   "exclude": ["node_modules"]
 }
